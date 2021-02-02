@@ -5,7 +5,7 @@ import backoff
 @backoff.on_exception(backoff.expo,
                       (requests.exceptions.Timeout,
                        requests.exceptions.ConnectionError))
-def census_api(url: str) -> dict:
+def app_api(url: str) -> dict:
     try:
         result = requests.get(url)
     except requests.exceptions.RequestException as error:
@@ -13,3 +13,13 @@ def census_api(url: str) -> dict:
         print(error)
 
     return {"json": result.json()["results"][0], "status_code": result.status_code}
+
+
+def create_response():
+    response = dict()
+    state = ""
+    insert = ""
+    delete = ""
+    schema = ""
+    has_more = ""
+    return response
