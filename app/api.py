@@ -1,15 +1,24 @@
 """
 
 """
+from typing import TypedDict
 
 import requests
 import backoff
 
 
+class RestReponse(TypedDict):
+    """
+    Used to define the dict types in a strict way.
+    """
+    json: dict
+    status_code: int
+
+
 @backoff.on_exception(backoff.expo,
                       (requests.exceptions.Timeout,
                        requests.exceptions.ConnectionError))
-def app_api(url: str) -> dict:
+def app_api(url: str) -> RestReponse:
     """
 
     :param url:
@@ -23,7 +32,18 @@ def app_api(url: str) -> dict:
     return {"json": result.json()["results"][0], "status_code": result.status_code}
 
 
-def create_response(json: dict) -> dict:
+class LamdaResponse(TypedDict):
+    """
+    Used to define the dict types in a strict way.
+    """
+    state: dict
+    insert: dict
+    delete: dict
+    schema: dict
+    has_more: dict
+
+
+def create_response(json: dict) -> LamdaResponse:
     """
 
     :return:
