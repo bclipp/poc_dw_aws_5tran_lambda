@@ -15,7 +15,7 @@ def get_variables() -> ConfigVars:
     :return:
     """
     try:
-        url = os.environ['URL']
+        url: dict = os.environ['URL']
     except KeyError:
         raise KeyError("Please verify that the needed env variables are set")
     return {"url": url}

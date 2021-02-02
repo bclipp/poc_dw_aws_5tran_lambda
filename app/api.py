@@ -1,3 +1,7 @@
+"""
+
+"""
+
 import requests
 import backoff
 
@@ -6,17 +10,25 @@ import backoff
                       (requests.exceptions.Timeout,
                        requests.exceptions.ConnectionError))
 def app_api(url: str) -> dict:
+    """
+
+    :param url:
+    :return:
+    """
     try:
-        result = requests.get(url)
+        result: requests.Response = requests.get(url)
     except requests.exceptions.RequestException as error:
-        # logging.error("Error in API call : %s", error)
         print(error)
 
     return {"json": result.json()["results"][0], "status_code": result.status_code}
 
 
-def create_response():
-    response = dict()
+def create_response(json: dict) -> dict:
+    """
+
+    :return:
+    """
+    response: dict = dict()
     state = ""
     insert = ""
     delete = ""
