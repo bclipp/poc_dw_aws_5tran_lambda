@@ -2,12 +2,14 @@
 
 """
 from typing import TypedDict
+import time
 
 import requests
 import backoff
+import datetime
 
 
-class RestReponse(TypedDict):
+class RestResponse(TypedDict):
     """
     Used to define the dict types in a strict way.
     """
@@ -18,21 +20,23 @@ class RestReponse(TypedDict):
 @backoff.on_exception(backoff.expo,
                       (requests.exceptions.Timeout,
                        requests.exceptions.ConnectionError))
-def app_api(url: str) -> RestReponse:
+def app_api(url: str = "https://my.api.mockaroo.com/fake_data_poc.json",
+            headers: dict = {'X-API-Key': '56c5cc10'}) -> RestResponse:
     """
 
     :param url:
+    :param headers:
     :return:
     """
     try:
-        result: requests.Response = requests.get(url)
+        result: requests.Response = requests.get(url, headers=headers)
     except requests.exceptions.RequestException as error:
         print(error)
 
-    return {"json": result.json()["results"][0], "status_code": result.status_code}
+    return {"json": result.json(), "status_code": result.status_code}
 
 
-class LamdaResponse(TypedDict):
+class LambdaResponse(TypedDict):
     """
     Used to define the dict types in a strict way.
     """
@@ -43,15 +47,12 @@ class LamdaResponse(TypedDict):
     has_more: dict
 
 
-def create_response(json: dict) -> LamdaResponse:
+def create_response(response_json: list) -> LambdaResponse:
     """
 
     :return:
     """
-    response: dict = dict()
-    state = ""
-    insert = ""
-    delete = ""
-    schema = ""
-    has_more = ""
-    return response
+    timestamp: str = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    result = {'state': {timestamp: timestamp},
+              'insert': {'students': response_json}}
+    return result
